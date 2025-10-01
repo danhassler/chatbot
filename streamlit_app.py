@@ -22,7 +22,7 @@ for message in st.session_state.messages:
 
 # Create a chat input field to allow the user to enter a message. This will display
 # automatically at the bottom of the page.
-if prompt := st.chat_input("What is up?"):
+if prompt := st.chat_input("Want to chat with a Nurse Mentor?"):
 
     # Store and display the current prompt.
     st.session_state.messages.append({"role": "user", "content": prompt})
@@ -32,8 +32,8 @@ if prompt := st.chat_input("What is up?"):
     client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
     response = client.models.generate_content(
         model="gemini-2.5-flash",
-        contents=prompt + "respond to me as if I were a nurse." + "respond as if I am a nurse mentor and educator." + "do not respond like a therapist" + "respond in 3 to five sentences"
-    
+        contents=prompt + "respond to me as if I were a nurse." + "respond as if I am a nurse mentor and educator." + "do not respond like a therapist" + "respond in 3 to five sentences" +
+   
     )
     st.session_state.messages.append({"role": "assistant", "content": response.text})
     st.markdown(response.text)
