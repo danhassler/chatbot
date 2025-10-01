@@ -1,24 +1,24 @@
 import streamlit as st
-from openai import OpenAI
+import google.generativeai as genai
 
 # Show title and description.
 st.title("💬 Chatbot")
 st.write(
-    "This is a simple chatbot that uses OpenAI's GPT-3.5 model to generate responses. "
-    "To use this app, you need to provide an OpenAI API key, which you can get [here](https://platform.openai.com/account/api-keys). "
+    "This is a simple chatbot that uses Google's Gemini model to generate responses. "
+    "To use this app, you need to provide a Gemini API key, which you can get [here](https://aistudio.google.com/app/apikey). "
     "You can also learn how to build this app step by step by [following our tutorial](https://docs.streamlit.io/develop/tutorials/llms/build-conversational-apps)."
 )
 
-# Ask user for their OpenAI API key via `st.text_input`.
+# Ask user for their Gemini API key via `st.text_input`.
 # Alternatively, you can store the API key in `./.streamlit/secrets.toml` and access it
 # via `st.secrets`, see https://docs.streamlit.io/develop/concepts/connections/secrets-management
-openai_api_key = st.text_input("OpenAI API Key", type="password")
-if not openai_api_key:
-    st.info("Test 2.", icon="🗝️")
+gemini_api_key = st.text_input("Gemini API Key", type="password")
+if not gemini_api_key:
+    st.info("Enter your Gemini API key to start chatting.", icon="🗝️")
 else:
 
-    # Create an OpenAI client.
-    client = OpenAI(api_key=openai_api_key)
+    # Configure the Gemini client.
+    genai.configure(api_key=gemini_api_key)
 
     # Create a session state variable to store the chat messages. This ensures that the
     # messages persist across reruns.
@@ -39,18 +39,25 @@ else:
         with st.chat_message("user"):
             st.markdown(prompt)
 
-        # Generate a response using the OpenAI API.
-        stream = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": m["role"], "content": m["content"]}
-                for m in st.session_state.messages
-            ],
-            stream=True,
-        )
+    # Prepare Gemini chat with existing history and stream the response.
+    def _to_gemini_history(messages):
+        history = []
+        for m in messages:
+            role = "user" if m["role"] == "user" else "model"
+            history.append({"role": role, "parts": [m["content"]]})
+        return history
 
-        # Stream the response to the chat using `st.write_stream`, then store it in 
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    chat = model.start_chat(history=_to_gemini_history(st.session_state.messages))
+
+    def _stream_gemini(prompt_text):
+        response = chat.send_message(prompt_text, stream=True)
+        for chunk in response:
+            if getattr(chunk, "text", None):
+                yield chunk.text
+
+        # Stream the response to the chat using `st.write_stream`, then store it in
         # session state.
         with st.chat_message("assistant"):
-            response = st.write_stream(stream)
+            response = st.write_stream(_stream_gemini(prompt))
         st.session_state.messages.append({"role": "assistant", "content": response})
