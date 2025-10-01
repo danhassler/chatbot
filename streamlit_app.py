@@ -1,6 +1,5 @@
 import streamlit as st
-import google.generativeai as genai
-
+from google import genai
 # Show title and description.
 st.title("💬 Chatbot")
 st.write(
@@ -14,7 +13,7 @@ st.write(
 # via `st.secrets`, see https://docs.streamlit.io/develop/concepts/connections/secrets-management
 gemini_api_key = st.text_input("Gemini API Key", type="password")
 if not gemini_api_key:
-    st.info("Enter your Gemini API key to start chatting.", icon="🗝️")
+    st.info("Enter your Gemini  key to start chatting.", icon="🗝️")
 else:
 
     # Configure the Gemini client.
