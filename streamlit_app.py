@@ -8,12 +8,7 @@ st.write(
     "You can also learn how to build this app step by step by [following our tutorial](https://docs.streamlit.io/develop/tutorials/llms/build-conversational-apps)."
 )
 
-client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
-response = client.models.generate_content(
-    model="gemini-2.5-flash",
-    contents="Hello, world!"
-)
-st.markdown(response.text)
+
 
 # Create a session state variable to store the chat messages. This ensures that the
 # messages persist across reruns.
@@ -34,6 +29,13 @@ if prompt := st.chat_input("What is up?"):
     with st.chat_message("user"):
         st.markdown(prompt)
 
+    client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents="Hello, world!"
+    )
+    st.markdown(response.text)
+
 # Prepare Gemini chat with existing history and stream the response.
 def _to_gemini_history(messages):
     history = []
@@ -42,7 +44,7 @@ def _to_gemini_history(messages):
         history.append({"role": role, "parts": [m["content"]]})
     return history
 
-chat = client.models.start_chat(model="gemini-2.5-flash", history=_to_gemini_history(st.session_state.messages))
+chat = client.models.start_chat(model="gemini-2.5-flash", history=[])
 
 def _stream_gemini(prompt_text):
     response = chat.send_message(prompt_text, stream=True)
