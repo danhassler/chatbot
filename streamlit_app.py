@@ -35,25 +35,3 @@ if prompt := st.chat_input("What is up?"):
         contents="Hello, world!"
     )
     st.markdown(response.text)
-
-# Prepare Gemini chat with existing history and stream the response.
-def _to_gemini_history(messages):
-    history = []
-    for m in messages:
-        role = "user" if m["role"] == "user" else "model"
-        history.append({"role": role, "parts": [m["content"]]})
-    return history
-
-chat = client.models.start_chat(model="gemini-2.5-flash", history=[])
-
-def _stream_gemini(prompt_text):
-    response = chat.send_message(prompt_text, stream=True)
-    for chunk in response:
-        if getattr(chunk, "text", None):
-            yield chunk.text
-
-    # Stream the response to the chat using `st.write_stream`, then store it in
-    # session state.
-    with st.chat_message("assistant"):
-        response = st.write_stream(_stream_gemini(prompt))
-    st.session_state.messages.append({"role": "assistant", "content": response})
