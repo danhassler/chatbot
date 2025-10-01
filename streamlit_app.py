@@ -32,7 +32,7 @@ if prompt := st.chat_input("What is up?"):
     client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
     response = client.models.generate_content(
         model="gemini-2.5-flash",
-        contents=prompt + " is my request, respond to me as if I were a baby."
-        + " and that I love dogs more than cats"
+        contents=prompt + " is my request, respond to me as if I were an nurse."
+        + " and that I am focused on nurse wellness."
     )
     st.markdown(response.text)
