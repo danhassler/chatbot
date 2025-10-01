@@ -30,7 +30,7 @@ if prompt := st.chat_input("What is up?"):
         st.markdown(prompt)
 
     client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
-    chat = client.aio.chats.create(model="gemini-2.5-flash", history=st.session_state.messages)
+    chat = client.aio.chats.create(model="gemini-2.5-flash")
     response = chat.send_message(prompt + " is my request, respond to me as if I were an nurse."
         + " and that I am focused on nurse wellness." 
     )
