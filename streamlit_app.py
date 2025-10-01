@@ -31,8 +31,7 @@ if prompt := st.chat_input("What is up?"):
 
     client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
     chat = client.chats.create(model="gemini-2.5-flash")
-    response = chat.send_message(
-        contents=prompt + " is my request, respond to me as if I were an nurse."
+    response = chat.send_message(prompt + " is my request, respond to me as if I were an nurse."
         + " and that I am focused on nurse wellness." + "Respond as if a southern lousiana accent." 
     )
     st.session_state.messages.append({"role": "assistant", "content": response.text})
