@@ -33,6 +33,6 @@ if prompt := st.chat_input("What is up?"):
     response = client.models.generate_content(
         model="gemini-2.5-flash",
         contents=prompt + " is my request, respond to me as if I were an nurse."
-        + " and that I am focused on nurse wellness."
+        + " and that I am focused on nurse wellness." + "Respond as if a southern lousiana accent." 
     )
     st.markdown(response.text)
