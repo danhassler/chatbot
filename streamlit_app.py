@@ -33,5 +33,6 @@ if prompt := st.chat_input("What is up?"):
     response = client.models.generate_content(
         model="gemini-2.5-flash",
         contents=prompt + " is my request, respond to me as if I were a baby."
+        + " and that I love dogs more than cats"
     )
     st.markdown(response.text)
