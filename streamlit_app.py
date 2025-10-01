@@ -8,7 +8,7 @@ st.write(
     "You can also learn how to build this app step by step by [following our tutorial](https://docs.streamlit.io/develop/tutorials/llms/build-conversational-apps)."
 )
 
-client = genai.Client()
+client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
 response = client.models.generate_content(
     model="gemini-1.5-flash",
     contents="Hello, world!"
