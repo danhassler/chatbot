@@ -42,8 +42,7 @@ def _to_gemini_history(messages):
         history.append({"role": role, "parts": [m["content"]]})
     return history
 
-model = genai.GenerativeModel("gemini-1.5-flash")
-chat = model.start_chat(history=_to_gemini_history(st.session_state.messages))
+chat = client.models.start_chat(model="gemini-2.5-flash", history=_to_gemini_history(st.session_state.messages))
 
 def _stream_gemini(prompt_text):
     response = chat.send_message(prompt_text, stream=True)
